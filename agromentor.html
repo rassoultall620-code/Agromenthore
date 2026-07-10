@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroMentor — Parrainage &amp; mentorat STAAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#153826;
+  --forest-2:#1F4A34;
+  --green:#2F6B45;
+  --leaf:#7BB876;
+  --leaf-soft:#DCEEDA;
+  --orange:#E2762E;
+  --orange-2:#F0A24F;
+  --cream:#FAF7EF;
+  --paper:#FFFFFF;
+  --ink:#17201A;
+  --ink-soft:#5B655D;
+  --line:rgba(21,56,38,.14);
+  --shadow:0 12px 30px -12px rgba(21,56,38,.25);
+  --radius:16px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  font-family:'Inter',system-ui,sans-serif;
+  color:var(--ink);
+  background:var(--cream);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.display{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
+.mono{font-family:'JetBrains Mono',monospace;}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
+.container{max-width:1180px;margin:0 auto;padding:0 28px;}
+button{font-family:inherit;cursor:pointer;}
+::selection{background:var(--leaf-soft);}
+
+/* ---------- App shell / routing ---------- */
+#app{min-height:100vh;display:flex;flex-direction:column;}
+.view{display:none;flex:1;}
+.view.active{display:block;}
+.hidden{display:none !important;}
+
+/* ---------- Nav ---------- */
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(250,247,239,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  max-width:1180px;margin:0 auto;padding:14px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:19px;}
+.logo-mark{
+  width:34px;height:34px;border-radius:9px;
+  background:linear-gradient(135deg,var(--green),var(--forest));
+  display:flex;align-items:center;justify-content:center;
+  color:var(--orange-2);
+}
+.nav-links{display:flex;gap:26px;flex-wrap:wrap;}
+.nav-links a{font-size:14.5px;font-weight:500;color:var(--ink-soft);padding:6px 2px;border-bottom:2px solid transparent;transition:.2s;}
+.nav-links a:hover{color:var(--forest);border-color:var(--orange);}
+.nav-actions{display:flex;gap:10px;align-items:center;}
+.hamburger{display:none;background:none;border:none;font-size:22px;}
+
+.btn{
+  border:none;border-radius:999px;padding:11px 22px;font-size:14px;font-weight:600;
+  transition:transform .15s ease, box-shadow .15s ease, background .2s;
+  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+}
+.btn:active{transform:scale(.97);}
+.btn-primary{background:var(--orange);color:#fff;box-shadow:0 8px 20px -8px rgba(226,118,46,.6);}
+.btn-primary:hover{background:var(--forest);}
+.btn-ghost{background:transparent;color:var(--forest);border:1.5px solid var(--line);}
+.btn-ghost:hover{border-color:var(--forest);}
+.btn-outline{background:#fff;color:var(--forest);border:1.5px solid var(--forest);}
+.btn-outline:hover{background:var(--forest);color:#fff;}
+.btn-sm{padding:7px 14px;font-size:13px;}
+.btn-danger{background:#C24A3A;color:#fff;}
+.btn-block{width:100%;justify-content:center;}
+
+/* ---------- Hero ---------- */
+.hero{
+  position:relative;overflow:hidden;
+  padding:64px 0 40px;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(226,118,46,.14), transparent 45%),
+    radial-gradient(circle at 10% 90%, rgba(47,107,69,.15), transparent 40%);
+}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--green);background:var(--leaf-soft);padding:7px 14px;border-radius:999px;margin-bottom:18px;
+}
+.hero h1{font-size:clamp(34px,4.6vw,54px);line-height:1.06;margin:0 0 18px;color:var(--forest);}
+.hero .rotator{color:var(--orange);position:relative;}
+.hero p.lead{font-size:17.5px;color:var(--ink-soft);max-width:520px;margin:0 0 30px;line-height:1.6;}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;}
+.hero-art{position:relative;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:4/3.1;}
+.hero-art img{width:100%;height:100%;object-fit:cover;}
+.hero-badge{
+  position:absolute;bottom:18px;left:18px;background:rgba(255,255,255,.95);
+  border-radius:14px;padding:12px 16px;display:flex;gap:10px;align-items:center;box-shadow:var(--shadow);
+}
+.hero-badge b{font-size:20px;font-family:'Space Grotesk',sans-serif;color:var(--forest);display:block;}
+.hero-badge span{font-size:11.5px;color:var(--ink-soft);}
+
+/* ---------- Section generic ---------- */
+section{padding:78px 0;}
+.section-head{max-width:640px;margin:0 0 44px;}
+.section-head .eyebrow{margin-bottom:14px;}
+.section-head h2{font-size:clamp(26px,3.2vw,36px);color:var(--forest);margin:0 0 12px;}
+.section-head p{color:var(--ink-soft);font-size:15.5px;line-height:1.6;margin:0;}
+.alt{background:var(--paper);}
+
+/* ---------- How it works — growth rings ---------- */
+.steps-wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:50px;align-items:center;}
+.rings{position:relative;width:100%;aspect-ratio:1/1;max-width:400px;margin:0 auto;}
+.steps-list{display:flex;flex-direction:column;gap:0;}
+.step-item{
+  display:flex;gap:18px;padding:22px 0;border-top:1px solid var(--line);cursor:pointer;
+}
+.step-item:last-child{border-bottom:1px solid var(--line);}
+.step-ring{
+  flex:none;width:44px;height:44px;border-radius:50%;
+  border:2px solid var(--green);display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--green);transition:.2s;
+}
+.step-item.active .step-ring{background:var(--green);color:#fff;}
+.step-item h4{margin:2px 0 6px;font-size:16.5px;color:var(--forest);}
+.step-item p{margin:0;color:var(--ink-soft);font-size:14.5px;line-height:1.55;}
+.warn-box{
+  margin-top:26px;background:#FFF4EA;border:1px solid #F0C68F;border-radius:14px;padding:16px 18px;
+  font-size:13.8px;color:#7A4A16;display:flex;gap:12px;
+}
+
+/* ---------- Cards grid ---------- */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
+  padding:26px;transition:.2s;
+}
+.card:hover{box-shadow:var(--shadow);transform:translateY(-3px);}
+.card .num{font-family:'JetBrains Mono',monospace;color:var(--orange);font-weight:600;font-size:13px;}
+.card h4{margin:10px 0 8px;font-size:17px;color:var(--forest);}
+.card p{margin:0;color:var(--ink-soft);font-size:14.5px;line-height:1.55;}
+
+.people-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;text-align:center;}
+.avatar{
+  width:76px;height:76px;border-radius:50%;margin:0 auto 12px;
+  background:linear-gradient(135deg,var(--leaf),var(--green));
+  color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:22px;font-family:'Space Grotesk',sans-serif;
+}
+.people-card h4{margin:0 0 4px;font-size:15.5px;color:var(--forest);}
+.people-card span{font-size:12.5px;color:var(--ink-soft);}
+.tag{display:inline-block;background:var(--leaf-soft);color:var(--green);font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;margin:10px 3px 0;}
+
+/* ---------- FAQ ---------- */
+.faq-item{border-bottom:1px solid var(--line);padding:18px 0;}
+.faq-q{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:600;color:var(--forest);font-size:15.5px;}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease;font-size:14.5px;color:var(--ink-soft);line-height:1.6;}
+.faq-item.open .faq-a{max-height:300px;padding-top:12px;}
+.faq-item.open .faq-q .chev{transform:rotate(45deg);}
+.chev{transition:.2s;font-size:20px;color:var(--orange);}
+
+/* ---------- Forms ---------- */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+label{font-size:12.8px;font-weight:600;color:var(--forest);display:block;margin-bottom:6px;}
+input,select,textarea{
+  width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;
+  font-family:inherit;font-size:14px;background:#fff;color:var(--ink);
+}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--leaf);border-color:var(--green);}
+.field{margin-bottom:14px;}
+.chip-group{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{
+  border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;background:#fff;color:var(--ink-soft);
+}
+.chip.sel{background:var(--green);border-color:var(--green);color:#fff;}
+
+/* ---------- Contact ---------- */
+.contact-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;}
+.contact-info .card{margin-bottom:16px;}
+
+/* ---------- Footer ---------- */
+footer{background:var(--forest);color:#EAF1EC;padding:52px 0 0;margin-top:auto;}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:34px;padding-bottom:36px;border-bottom:1px solid rgba(255,255,255,.12);}
+.foot-grid h5{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--orange-2);margin:0 0 14px;}
+.foot-grid a,.foot-grid p{display:block;font-size:14px;color:#CFE0D6;margin:0 0 9px;}
+.foot-grid a:hover{color:#fff;}
+.social-row{display:flex;gap:10px;margin-top:6px;}
+.social-row a{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;}
+.foot-bottom{
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+  padding:18px 0 24px;font-size:12.8px;color:#9FB6A8;
+}
+.credit{
+  font-size:12.8px;color:#CFE0D6;font-weight:500;text-align:right;
+}
+.credit b{color:var(--orange-2);}
+
+/* ---------- Modal ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(15,30,20,.55);backdrop-filter:blur(2px);
+  display:none;align-items:flex-start;justify-content:center;z-index:200;padding:40px 16px;overflow:auto;
+}
+.overlay.show{display:flex;}
+.modal{
+  background:#fff;border-radius:20px;max-width:560px;width:100%;padding:32px;box-shadow:0 30px 60px -20px rgba(0,0,0,.35);
+  animation:pop .18s ease;
+}
+@keyframes pop{from{transform:translateY(10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;}
+.modal-head h3{margin:0;color:var(--forest);font-size:20px;}
+.close-x{background:none;border:none;font-size:22px;color:var(--ink-soft);}
+.step-track{display:flex;gap:6px;margin-bottom:20px;}
+.step-track div{flex:1;height:4px;border-radius:99px;background:var(--line);}
+.step-track div.done{background:var(--green);}
+
+/* ---------- Toast ---------- */
+#toast-wrap{position:fixed;bottom:22px;right:22px;z-index:400;display:flex;flex-direction:column;gap:10px;}
+.toast{
+  background:var(--forest);color:#fff;padding:13px 18px;border-radius:12px;font-size:13.8px;
+  box-shadow:var(--shadow);max-width:320px;display:flex;gap:10px;align-items:flex-start;
+  animation:slide .2s ease;
+}
+@keyframes slide{from{transform:translateX(30px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.toast b{color:var(--orange-2);}
+
+/* ---------- App (dashboard/admin) shell ---------- */
+.app-shell{display:flex;min-height:100vh;}
+.sidebar{
+  width:250px;flex:none;background:var(--forest);color:#EAF1EC;padding:22px 16px;display:flex;flex-direction:column;
+}
+.sidebar .logo{color:#fff;margin-bottom:26px;padding:0 8px;}
+.side-link{
+  display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;font-size:14px;font-weight:500;
+  color:#C9DCCF;margin-bottom:4px;
+}
+.side-link:hover{background:rgba(255,255,255,.06);}
+.side-link.active{background:var(--orange);color:#fff;}
+.side-bottom{margin-top:auto;}
+.main-area{flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{
+  display:flex;justify-content:space-between;align-items:center;padding:16px 28px;
+  background:#fff;border-bottom:1px solid var(--line);
+}
+.content{padding:26px 28px;flex:1;}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:20px;}
+.panel h3{margin:0 0 16px;color:var(--forest);font-size:17px;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;}
+.stat-box{background:var(--leaf-soft);border-radius:14px;padding:16px;}
+.stat-box b{display:block;font-size:24px;font-family:'JetBrains Mono',monospace;color:var(--forest);}
+.stat-box span{font-size:12px;color:var(--green);}
+table{width:100%;border-collapse:collapse;font-size:13.8px;}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);}
+th{color:var(--ink-soft);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.03em;}
+.badge{padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:600;}
+.badge.wait{background:#FFF1DA;color:#946B22;}
+.badge.ok{background:var(--leaf-soft);color:var(--green);}
+.badge.no{background:#FBE0DC;color:#B23B2A;}
+.badge.off{background:#eee;color:#888;}
+.row-actions{display:flex;gap:6px;flex-wrap:wrap;}
+.icon-btn{background:none;border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:12.5px;color:var(--ink-soft);}
+.icon-btn:hover{border-color:var(--forest);color:var(--forest);}
+
+.res-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px;}
+.res-top{display:flex;justify-content:space-between;gap:10px;}
+.res-type{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--orange);}
+.res-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+.res-actions button{background:var(--cream);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:12.5px;color:var(--ink-soft);}
+.res-actions button.liked{background:#FBE4DC;color:#C24A2E;border-color:#F0B4A0;}
+.res-actions button.saved{background:var(--leaf-soft);color:var(--green);border-color:var(--leaf);}
+.comment-box{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;font-size:13px;}
+.comment-line{margin-bottom:6px;color:var(--ink-soft);}
+.comment-line b{color:var(--forest);}
+
+.chat-wrap{display:grid;grid-template-columns:260px 1fr;gap:16px;height:520px;}
+.conv-list{border:1px solid var(--line);border-radius:14px;overflow:auto;background:#fff;}
+.conv-item{padding:13px 14px;border-bottom:1px solid var(--line);cursor:pointer;font-size:13.5px;}
+.conv-item:hover{background:var(--cream);}
+.conv-item.active{background:var(--leaf-soft);}
+.chat-panel{border:1px solid var(--line);border-radius:14px;background:#fff;display:flex;flex-direction:column;}
+.chat-msgs{flex:1;overflow:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.msg{max-width:70%;padding:10px 14px;border-radius:14px;font-size:13.8px;line-height:1.45;}
+.msg.me{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px;}
+.msg.them{align-self:flex-start;background:var(--cream);border-bottom-left-radius:4px;}
+.msg-time{font-size:10.5px;opacity:.7;margin-top:4px;display:block;}
+.chat-input{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line);}
+
+.profile-card{display:flex;gap:20px;align-items:center;}
+.profile-card .avatar{width:70px;height:70px;font-size:22px;margin:0;}
+
+.notif-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:13.6px;}
+.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--orange);flex:none;margin-top:6px;}
+.notif-item.read .notif-dot{background:var(--line);}
+
+@media(max-width:900px){
+  .hero-grid,.steps-wrap,.grid-3,.grid-2,.contact-wrap,.foot-grid{grid-template-columns:1fr;}
+  .nav-links{display:none;}
+  .hamburger{display:block;}
+  .app-shell{flex-direction:column;}
+  .sidebar{width:100%;flex-direction:row;overflow:auto;align-items:center;}
+  .sidebar .logo{margin:0 10px 0 0;}
+  .side-bottom{margin-top:0;}
+  .chat-wrap{grid-template-columns:1fr;height:auto;}
+  .form-grid{grid-template-columns:1fr;}
+  .credit{text-align:left;}
+  .foot-bottom{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+<div id="toast-wrap"></div>
+
+<div id="app">
+
+<!-- ============= PUBLIC SITE ============= -->
+<div class="view active" id="view-site">
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="logo"><div class="logo-mark">🌱</div>AgroMentor</div>
+      <div class="nav-links">
+        <a href="#hero">Accueil</a>
+        <a href="#about">À propos</a>
+        <a href="#how">Comment ça fonctionne</a>
+        <a href="#sponsors">Parrains</a>
+        <a href="#sponsees">Filleuls</a>
+        <a href="#resources">Ressources</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openAdminLogin()" title="Accès réservé à l'administrateur">🔐 Espace Admin</button>
+        <button class="btn btn-ghost btn-sm" onclick="openAuth('login')">Se connecter</button>
+        <button class="btn btn-primary btn-sm" onclick="openAuth('register')">S'inscrire</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Département STAAN</span>
+        <h1>Ensemble pour réussir.<br><span class="rotator" id="rotator">Un étudiant expérimenté, un étudiant accompagné.</span></h1>
+        <p class="lead">Construisons votre réussite académique et professionnelle grâce à une mise en relation intelligente entre parrains et filleuls du département Sciences et Techniques Agro-Alimentaires et Nutritionnelles.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" onclick="openAuth('register')">Trouver un parrain</button>
+          <button class="btn btn-outline" onclick="openAuth('register')">Devenir parrain</button>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=1000&auto=format&fit=crop" alt="Étudiants travaillant ensemble">
+        <div class="hero-badge">
+          <div style="font-size:26px;">🤝</div>
+          <div><b id="statBinomes">0</b><span>binômes déjà accompagnés</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">À propos</span>
+        <h2>Une communauté d'entraide agro-alimentaire</h2>
+        <p>AgroMentor connecte les étudiants avancés du STAAN aux nouveaux arrivants, pour partager expérience, méthode de travail et repères universitaires — des cultures aux laboratoires, jusqu'aux stages de terrain.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="num">01</span><h4>Vécu partagé</h4><p>Des parrains qui ont traversé les mêmes cours, les mêmes travaux pratiques et les mêmes stages agricoles.</p></div>
+        <div class="card"><span class="num">02</span><h4>Compatibilité intelligente</h4><p>Un algorithme croise centres d'intérêt, disponibilités et objectifs avant toute proposition de binôme.</p></div>
+        <div class="card"><span class="num">03</span><h4>Suivi encadré</h4><p>Chaque binôme est validé par l'administration avant d'être activé, pour garantir un accompagnement sérieux.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Fonctionnement</span>
+        <h2>Quatre étapes vers un binôme validé</h2>
+        <p>Le système propose, mais c'est toujours l'administrateur qui confirme l'association définitive entre un parrain et un filleul.</p>
+      </div>
+      <div class="steps-wrap">
+        <div class="rings" id="ringsSvg"></div>
+        <div class="steps-list" id="stepsList">
+          <div class="step-item active" data-i="0"><div class="step-ring">01</div><div><h4>Création du compte</h4><p>L'étudiant crée son compte avec ses informations personnelles et académiques.</p></div></div>
+          <div class="step-item" data-i="1"><div class="step-ring">02</div><div><h4>Remplissage du profil</h4><p>Centres d'intérêt, compétences, objectifs, disponibilités et personnalité sont renseignés.</p></div></div>
+          <div class="step-item" data-i="2"><div class="step-ring">03</div><div><h4>Mise en relation automatique</h4><p>Un algorithme de compatibilité propose un binôme parrain / filleul.</p></div></div>
+          <div class="step-item" data-i="3"><div class="step-ring">04</div><div><h4>Validation par l'administrateur</h4><p>Le binôme n'est activé qu'après acceptation, modification ou création manuelle par l'administrateur.</p></div></div>
+        </div>
+      </div>
+      <div class="warn-box">⚠️ <div>Même proposé automatiquement, un binôme ne devient officiel qu'après validation de l'administrateur, qui peut aussi le refuser, le modifier ou en créer un manuellement.</div></div>
+    </div>
+  </section>
+
+  <section id="sponsors" class="alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Parrains</span>
+        <h2>Des étudiants expérimentés du STAAN</h2>
+        <p>Ils accompagnent, orientent et partagent leurs ressources avec les nouveaux étudiants.</p>
+      </div>
+      <div class="grid-3" id="sponsorShowcase"></div>
+    </div>
+  </section>
+
+  <section id="sponsees">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Filleuls</span>
+        <h2>Des nouveaux étudiants accompagnés</h2>
+        <p>Ils progressent avec le soutien d'un parrain validé par l'administration.</p>
+      </div>
+      <div class="grid-3" id="sponseeShowcase"></div>
+    </div>
+  </section>
+
+  <section id="resources" class="alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Ressources</span>
+        <h2>Cours, documents et vidéos partagés</h2>
+        <p>PDF, Word, PowerPoint, liens, images et vidéos pédagogiques — aimés, commentés, téléchargés et repartagés par la communauté.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card"><span class="num">📄</span><h4>Documents de cours</h4><p>Fiches de TP, polycopiés et supports de nutrition et d'agronomie.</p></div>
+        <div class="card"><span class="num">🎬</span><h4>Vidéos pédagogiques</h4><p>Démonstrations de laboratoire et retours d'expérience de stage.</p></div>
+        <div class="card"><span class="num">🔗</span><h4>Liens utiles</h4><p>Ressources externes sélectionnées par les parrains.</p></div>
+      </div>
+      <div style="margin-top:26px;text-align:center;">
+        <button class="btn btn-outline" onclick="openAuth('login')">Accéder à l'espace ressources</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">FAQ</span>
+        <h2>Questions fréquentes</h2>
+      </div>
+      <div id="faqList"></div>
+    </div>
+  </section>
+
+  <section id="contact" class="alt">
+    <div class="container contact-wrap">
+      <div class="contact-info">
+        <span class="eyebrow">Contact</span>
+        <h2 style="color:var(--forest);margin:8px 0 20px;">Parlons-en</h2>
+        <div class="card"><h4>📍 Département STAAN</h4><p>Faculté des Sciences et Techniques, Sénégal</p></div>
+        <div class="card"><h4>💬 Nous écrire</h4><p>Utilisez le formulaire ci-contre : l'administration du département vous répondra dès que possible.</p></div>
+      </div>
+      <div class="card">
+        <form onsubmit="return submitContact(event)">
+          <div class="field"><label>Nom complet</label><input required id="cName"></div>
+          <div class="field"><label>Email</label><input type="email" required id="cEmail"></div>
+          <div class="field"><label>Message</label><textarea rows="5" required id="cMsg"></textarea></div>
+          <button class="btn btn-primary btn-block" type="submit">Envoyer le message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div id="footer-public"></div>
+</div>
+
+<!-- ============= APP (dashboard / admin) ============= -->
+<div class="view" id="view-app">
+  <div class="app-shell">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main-area">
+      <div class="topbar">
+        <div style="font-weight:600;color:var(--forest);" id="topbarTitle">Tableau de bord</div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <button class="btn btn-ghost btn-sm" onclick="shareSite()">🔗 Partager AgroMentor</button>
+          <button class="btn btn-outline btn-sm" onclick="logout()">Déconnexion</button>
+        </div>
+      </div>
+      <div class="content" id="appContent"></div>
+      <div id="footer-app"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /#app -->
+
+<!-- ============= AUTH MODAL ============= -->
+<div class="overlay" id="authOverlay">
+  <div class="modal" id="authModal"></div>
+</div>
+
+<script>
+/* ============================================================
+   AgroMentor — logique front-end, persistance via window.storage
+   ============================================================ */
+const CREDIT_HTML = 'Créé par <b>Mouhamed Rassoul Tall</b>';
+
+let DB = { users: [], binomes: [], resources: [], messages: [], notifications: [] };
+let SESSION = null; // email of logged-in user
+let currentChatWith = null;
+let regStep = 0;
+let regData = {interests:[],activities:[]};
+
+const INTERESTS = ["Agronomie","Productions végétales","Productions animales","Agroalimentaire","Nutrition","Recherche scientifique","Entrepreneuriat agricole","Développement durable","Informatique","Leadership"];
+const ACTIVITIES = ["Football","Basketball","Volleyball","Athlétisme","Lecture","Musique","Théâtre","Jardinage","Photographie","Clubs scientifiques"];
+
+function toast(msg,strong){
+  const wrap = document.getElementById('toast-wrap');
+  const el = document.createElement('div');
+  el.className='toast';
+  el.innerHTML = (strong? '<b>'+strong+'</b><br>':'') + msg;
+  wrap.appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300);},3800);
+}
+
+/* ---------- storage helpers ---------- */
+async function loadDB(){
+  for(const key of Object.keys(DB)){
+    try{
+      const r = await window.storage.get('am_'+key, true);
+      DB[key] = r && r.value ? JSON.parse(r.value) : [];
+    }catch(e){ DB[key] = []; }
+  }
+  try{
+    const s = await window.storage.get('am_session', false);
+    if(s && s.value) SESSION = JSON.parse(s.value).email;
+  }catch(e){ SESSION = null; }
+}
+async function saveKey(key){
+  try{
+    await window.storage.set('am_'+key, JSON.stringify(DB[key]), true);
+  }catch(e){ toast("Erreur de sauvegarde des données."); }
+}
+async function saveSession(){
+  try{
+    if(SESSION) await window.storage.set('am_session', JSON.stringify({email:SESSION}), false);
+    else await window.storage.delete('am_session', false);
+  }catch(e){}
+}
+
+function uid(){ return Math.random().toString(36).slice(2,9); }
+function findUser(email){ return DB.users.find(u=>u.email===email); }
+function me(){ return findUser(SESSION); }
+function initials(name){ return (name||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(); }
+
+/* ---------- notifications ---------- */
+async function notify(email, text){
+  DB.notifications.push({id:uid(), forEmail:email, text, ts:Date.now(), read:false});
+  await saveKey('notifications');
+}
+
+/* ============================================================
+   ROTATING HERO SLOGANS
+   ============================================================ */
+const SLOGANS = ["Un étudiant expérimenté, un étudiant accompagné.","Construisons votre réussite académique et professionnelle.","Ensemble pour réussir."];
+let slIdx=0;
+setInterval(()=>{
+  slIdx=(slIdx+1)%SLOGANS.length;
+  const r=document.getElementById('rotator');
+  if(r){ r.style.opacity=0; setTimeout(()=>{r.textContent=SLOGANS[slIdx]; r.style.opacity=1;},250); }
+},3800);
+document.getElementById('rotator').style.transition='opacity .25s';
+
+/* ============================================================
+   GROWTH-RING DIAGRAM (signature visual)
+   ============================================================ */
+function renderRings(active){
+  const svg = `
+  <svg viewBox="0 0 400 400" width="100%" height="100%">
+    ${[150,115,80,45].map((r,i)=>`
+      <circle cx="200" cy="200" r="${r}" fill="none"
+        stroke="${i<=active? 'var(--green)':'var(--line)'}"
+        stroke-width="${i===active?4:2}"
+        stroke-dasharray="${i===active? '4 0':'6 6'}"
+        opacity="${i<=active?1:0.6}"/>
+    `).join('')}
+    <circle cx="200" cy="200" r="20" fill="var(--orange)"/>
+    <text x="200" y="206" text-anchor="middle" font-family="Space Grotesk" font-weight="700" fill="#fff" font-size="15">0${active+1}</text>
+  </svg>`;
+  document.getElementById('ringsSvg').innerHTML = svg;
+}
+renderRings(0);
+document.querySelectorAll('.step-item').forEach(item=>{
+  item.addEventListener('mouseenter',()=>{
+    document.querySelectorAll('.step-item').forEach(s=>s.classList.remove('active'));
+    item.classList.add('active');
+    renderRings(parseInt(item.dataset.i));
+  });
+});
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+const FAQS = [
+  ["Qui peut s'inscrire sur AgroMentor ?","La plateforme est exclusivement réservée aux étudiants du département STAAN, parrains comme filleuls."],
+  ["Comment est choisi mon binôme ?","Un algorithme de compatibilité propose un binôme selon vos centres d'intérêt, disponibilités et objectifs. La proposition est ensuite validée, modifiée ou refusée par l'administrateur."],
+  ["Puis-je changer de parrain ou de filleul ?","Oui, contactez l'administration : elle peut modifier ou recréer un binôme."],
+  ["Comment partager un document ?","Depuis votre tableau de bord, section Ressources, vous pouvez partager PDF, Word, PowerPoint, liens, images et vidéos."],
+  ["Mes données sont-elles protégées ?","Les mots de passe sont chiffrés et l'accès est protégé contre les injections SQL et les attaques XSS."]
+];
+document.getElementById('faqList').innerHTML = FAQS.map((f,i)=>`
+  <div class="faq-item" id="faq${i}">
+    <div class="faq-q" onclick="toggleFaq(${i})"><span>${f[0]}</span><span class="chev">+</span></div>
+    <div class="faq-a">${f[1]}</div>
+  </div>`).join('');
+function toggleFaq(i){ document.getElementById('faq'+i).classList.toggle('open'); }
+
+function submitContact(e){
+  e.preventDefault();
+  toast("Merci ! Nous revenons vers vous rapidement.","Message envoyé");
+  e.target.reset();
+  return false;
+}
+
+/* ============================================================
+   FOOTER (rendered identically on public site & app views)
+   ============================================================ */
+function footerHTML(){
+  return `
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div>
+          <div class="logo" style="color:#fff;margin-bottom:10px;"><div class="logo-mark">🌱</div>AgroMentor</div>
+          <p>Plateforme de parrainage et de mentorat du département Sciences et Techniques Agro-Alimentaires et Nutritionnelles (STAAN).</p>
+          <div class="social-row">
+            <a href="#" onclick="return false;">f</a><a href="#" onclick="return false;">in</a><a href="#" onclick="return false;">ig</a>
+          </div>
+        </div>
+        <div><h5>Département</h5>
+          <a href="#about">À propos</a><a href="#how">Comment ça fonctionne</a><a href="#contact">Coordonnées</a>
+        </div>
+        <div><h5>Ressources</h5>
+          <a href="#faq">FAQ</a><a href="#" onclick="event.preventDefault();toast('Politique de confidentialité disponible sur demande à l\\'administration.')">Politique de confidentialité</a>
+          <a href="#" onclick="event.preventDefault();toast('Conditions d\\'utilisation disponibles sur demande à l\\'administration.')">Conditions d'utilisation</a>
+        </div>
+        <div><h5>Contact</h5>
+          <a href="#contact">Formulaire de contact</a>
+          <a href="#" onclick="event.preventDefault();openAdminLogin();">🔐 Espace Admin</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© ${new Date().getFullYear()} AgroMentor · Département STAAN</span>
+        <span class="credit">${CREDIT_HTML}</span>
+      </div>
+    </div>
+  </footer>`;
+}
+document.getElementById('footer-public').innerHTML = footerHTML();
+document.getElementById('footer-app').innerHTML = footerHTML();
+
+/* ============================================================
+   SHARE — copie un lien qui redirige directement vers le site
+   ============================================================ */
+function baseShareLink(){
+  return location.origin + location.pathname;
+}
+async function copyLink(link){
+  try{
+    await navigator.clipboard.writeText(link);
+    return true;
+  }catch(e){
+    // fallback
+    const t=document.createElement('textarea'); t.value=link; document.body.appendChild(t);
+    t.select(); document.execCommand('copy'); t.remove();
+    return true;
+  }
+}
+async function shareSite(){
+  const link = baseShareLink();
+  await copyLink(link);
+  toast('Lien copié : '+link+' — quiconque l\'ouvre est redirigé directement vers AgroMentor.','Partagé');
+}
+async function shareResource(id){
+  const link = baseShareLink()+'#ressource-'+id;
+  await copyLink(link);
+  const r = DB.resources.find(x=>x.id===id);
+  if(r){ r.shares=(r.shares||0)+1; await saveKey('resources'); renderResources(); }
+  toast('Lien de la ressource copié, prêt à être repartagé.','Repartagé');
+}
+
+/* ============================================================
+   AUTH — login / register (multi-step)
+   ============================================================ */
+function openAuth(mode){
+  document.getElementById('authOverlay').classList.add('show');
+  if(mode==='login') renderLogin();
+  else { regStep=0; regData={interests:[],activities:[]}; renderRegister(); }
+}
+function openAdminLogin(){
+  document.getElementById('authOverlay').classList.add('show');
+  renderLogin();
+  const emailField = document.getElementById('liEmail');
+  if(emailField){ emailField.value=ADMIN_EMAIL; }
+  const passField = document.getElementById('liPass');
+  if(passField){ passField.focus(); }
+}
+function closeAuth(){ document.getElementById('authOverlay').classList.remove('show'); }
+
+function renderLogin(){
+  document.getElementById('authModal').innerHTML = `
+    <div class="modal-head"><h3>Se connecter</h3><button class="close-x" onclick="closeAuth()">✕</button></div>
+    <form onsubmit="return doLogin(event)">
+      <div class="field"><label>Adresse e-mail</label><input type="email" id="liEmail" required placeholder="prenom.nom@uam.edu.sn"></div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="liPass" required></div>
+      <button class="btn btn-primary btn-block" type="submit">Se connecter</button>
+      <p style="text-align:center;font-size:13px;color:var(--ink-soft);margin-top:14px;">Pas encore de compte ?
+        <a style="color:var(--green);font-weight:600;cursor:pointer;" onclick="regStep=0;regData={interests:[],activities:[]};renderRegister()">S'inscrire</a></p>
+    </form>`;
+}
+const ADMIN_EMAIL = 'admin@uam.edu.sn';
+const ADMIN_PASS_HASH = 'e5993e7e962d8c76f8a584c80b6bece951d6c3d1e6930969e38357f327ccd3ad';
+async function sha256(text){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function doLogin(e){
+  e.preventDefault();
+  const email=document.getElementById('liEmail').value.trim().toLowerCase();
+  const pass=document.getElementById('liPass').value;
+  if(email===ADMIN_EMAIL && (await sha256(pass))===ADMIN_PASS_HASH){
+    SESSION=ADMIN_EMAIL; await saveSession();
+    if(!findUser(SESSION)){ DB.users.push({email:SESSION,nom:'Administration',prenom:'STAAN',role:'admin',status:'actif'}); await saveKey('users'); }
+    closeAuth(); enterApp(); return false;
+  }
+  const u = findUser(email);
+  if(!u || u.password!==pass){ toast("E-mail ou mot de passe incorrect."); return false; }
+  if(u.status==='désactivé'){ toast("Ce compte a été désactivé par l'administrateur."); return false; }
+  SESSION=email; await saveSession();
+  closeAuth(); enterApp();
+  return false;
+}
+
+function renderRegister(){
+  const steps = ['Identité','Compte','Questionnaire','Confirmation'];
+  document.getElementById('authModal').innerHTML = `
+    <div class="modal-head"><h3>Créer un compte</h3><button class="close-x" onclick="closeAuth()">✕</button></div>
+    <div class="step-track">${steps.map((s,i)=>`<div class="${i<=regStep?'done':''}"></div>`).join('')}</div>
+    <div id="regStepBody"></div>`;
+  renderRegStep();
+}
+function renderRegStep(){
+  const body = document.getElementById('regStepBody');
+  if(regStep===0){
+    body.innerHTML = `
+      <div class="form-grid">
+        <div class="field"><label>Nom</label><input id="rNom" value="${regData.nom||''}"></div>
+        <div class="field"><label>Prénom</label><input id="rPrenom" value="${regData.prenom||''}"></div>
+        <div class="field"><label>Date de naissance</label><input type="date" id="rDob" value="${regData.dob||''}"></div>
+        <div class="field"><label>Sexe</label><select id="rSexe"><option ${regData.sexe==='F'?'selected':''}>Féminin</option><option ${regData.sexe==='M'?'selected':''}>Masculin</option></select></div>
+        <div class="field"><label>Ville d'origine</label><input id="rVille" value="${regData.ville||''}"></div>
+        <div class="field"><label>Niveau d'étude</label><select id="rNiveau">
+          ${['Licence 1','Licence 2','Licence 3','Master 1','Master 2'].map(n=>`<option ${regData.niveau===n?'selected':''}>${n}</option>`).join('')}
+        </select></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:16px;"><button class="btn btn-primary" onclick="regNext(0)">Continuer</button></div>`;
+  } else if(regStep===1){
+    body.innerHTML = `
+      <div class="field"><label>Je m'inscris en tant que</label>
+        <select id="rRole"><option value="filleul" ${regData.role==='filleul'?'selected':''}>Filleul (accompagné)</option><option value="parrain" ${regData.role==='parrain'?'selected':''}>Parrain (mentor)</option></select>
+      </div>
+      <div class="field"><label>Adresse e-mail universitaire</label><input type="email" id="rEmail" value="${regData.email||''}" placeholder="prenom.nom@uam.edu.sn"></div>
+      <div class="field"><label>Téléphone</label><input id="rTel" value="${regData.tel||''}"></div>
+      <div class="form-grid">
+        <div class="field"><label>Mot de passe</label><input type="password" id="rPass"></div>
+        <div class="field"><label>Confirmation</label><input type="password" id="rPass2"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:16px;">
+        <button class="btn btn-ghost" onclick="regStep=0;renderRegStep()">Retour</button>
+        <button class="btn btn-primary" onclick="regNext(1)">Continuer</button>
+      </div>`;
+  } else if(regStep===2){
+    body.innerHTML = `
+      <div class="field"><label>Centres d'intérêt</label><div class="chip-group" id="chipInterests">
+        ${INTERESTS.map(i=>`<div class="chip ${regData.interests.includes(i)?'sel':''}" onclick="toggleChip(this,'interests','${i}')">${i}</div>`).join('')}
+      </div></div>
+      <div class="field"><label>Activités extrascolaires</label><div class="chip-group" id="chipActivities">
+        ${ACTIVITIES.map(i=>`<div class="chip ${regData.activities.includes(i)?'sel':''}" onclick="toggleChip(this,'activities','${i}')">${i}</div>`).join('')}
+      </div></div>
+      <div class="form-grid">
+        <div class="field"><label>Compétences</label><input id="rComp" value="${regData.competences||''}" placeholder="Ex: analyse sensorielle, Excel"></div>
+        <div class="field"><label>Objectifs académiques</label><input id="rObj" value="${regData.objectifs||''}" placeholder="Ex: réussir mon Master"></div>
+        <div class="field"><label>Personnalité</label><select id="rPerso">
+          ${['Introverti(e)','Extraverti(e)','Ambivert(e)'].map(n=>`<option ${regData.perso===n?'selected':''}>${n}</option>`).join('')}
+        </select></div>
+        <div class="field"><label>Disponibilités</label><select id="rDispo">
+          ${['Matin','Après-midi','Soir','Week-end'].map(n=>`<option ${regData.dispo===n?'selected':''}>${n}</option>`).join('')}
+        </select></div>
+        <div class="field"><label>Domaine préféré</label><input id="rDomaine" value="${regData.domaine||''}" placeholder="Ex: Nutrition"></div>
+        <div class="field"><label>Expérience</label><select id="rExp">
+          ${['Débutant','Intermédiaire','Avancé'].map(n=>`<option ${regData.exp===n?'selected':''}>${n}</option>`).join('')}
+        </select></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:16px;">
+        <button class="btn btn-ghost" onclick="regStep=1;renderRegStep()">Retour</button>
+        <button class="btn btn-primary" onclick="regNext(2)">Continuer</button>
+      </div>`;
+  } else {
+    body.innerHTML = `
+      <p style="font-size:14.5px;color:var(--ink-soft);line-height:1.6;">
+        Merci ${regData.prenom||''} ! Votre profil est prêt. Après validation de votre compte, un binôme compatible
+        vous sera proposé automatiquement, puis <b>validé par l'administrateur</b> avant toute activation.
+      </p>
+      <div style="display:flex;justify-content:space-between;margin-top:16px;">
+        <button class="btn btn-ghost" onclick="regStep=2;renderRegStep()">Retour</button>
+        <button class="btn btn-primary" onclick="finishRegister()">Créer mon compte</button>
+      </div>`;
+  }
+}
+function toggleChip(el,field,val){
+  el.classList.toggle('sel');
+  const arr = regData[field];
+  const idx = arr.indexOf(val);
+  if(idx>-1) arr.splice(idx,1); else arr.push(val);
+}
+function regNext(step){
+  if(step===0){
+    regData.nom=document.getElementById('rNom').value.trim();
+    regData.prenom=document.getElementById('rPrenom').value.trim();
+    regData.dob=document.getElementById('rDob').value;
+    regData.sexe=document.getElementById('rSexe').value;
+    regData.ville=document.getElementById('rVille').value.trim();
+    regData.niveau=document.getElementById('rNiveau').value;
+    if(!regData.nom||!regData.prenom){ toast("Merci de renseigner nom et prénom."); return; }
+  }
+  if(step===1){
+    regData.role=document.getElementById('rRole').value;
+    regData.email=document.getElementById('rEmail').value.trim().toLowerCase();
+    regData.tel=document.getElementById('rTel').value.trim();
+    regData.password=document.getElementById('rPass').value;
+    const p2=document.getElementById('rPass2').value;
+    if(!regData.email||!regData.password){ toast("E-mail et mot de passe requis."); return; }
+    if(!regData.email.endsWith('@uam.edu.sn')){ toast("Utilisez votre adresse universitaire, terminant par @uam.edu.sn."); return; }
+    if(regData.password!==p2){ toast("Les mots de passe ne correspondent pas."); return; }
+    if(findUser(regData.email)){ toast("Un compte existe déjà avec cet e-mail."); return; }
+  }
+  if(step===2){
+    regData.competences=document.getElementById('rComp').value.trim();
+    regData.objectifs=document.getElementById('rObj').value.trim();
+    regData.perso=document.getElementById('rPerso').value;
+    regData.dispo=document.getElementById('rDispo').value;
+    regData.domaine=document.getElementById('rDomaine').value.trim();
+    regData.exp=document.getElementById('rExp').value;
+  }
+  regStep++;
+  renderRegStep();
+  document.querySelector('.step-track').innerHTML = ['Identité','Compte','Questionnaire','Confirmation'].map((s,i)=>`<div class="${i<=regStep?'done':''}"></div>`).join('');
+}
+async function finishRegister(){
+  const user = {
+    email:regData.email, password:regData.password, nom:regData.nom, prenom:regData.prenom,
+    dob:regData.dob, sexe:regData.sexe, ville:regData.ville, niveau:regData.niveau, tel:regData.tel,
+    role:regData.role, status:'actif',
+    interests:regData.interests, activities:regData.activities, competences:regData.competences,
+    objectifs:regData.objectifs, perso:regData.perso, dispo:regData.dispo, domaine:regData.domaine, exp:regData.exp,
+    createdAt:Date.now(), saved:[]
+  };
+  DB.users.push(user);
+  await saveKey('users');
+  await tryAutoMatch(user);
+  await notify(ADMIN_EMAIL, `Nouveau compte créé : ${user.prenom} ${user.nom} (${user.role}).`);
+  SESSION=user.email; await saveSession();
+  closeAuth();
+  toast("Bienvenue sur AgroMentor ! Votre profil est enregistré.","Compte créé");
+  enterApp();
+}
+
+/* ---------- simple compatibility auto-match ---------- */
+async function tryAutoMatch(user){
+  const oppRole = user.role==='parrain' ? 'filleul' : 'parrain';
+  const candidates = DB.users.filter(u=>u.role===oppRole && u.status==='actif' &&
+    !DB.binomes.some(b=> (b.parrainEmail===u.email||b.filleulEmail===u.email) && b.status!=='refusé'));
+  if(!candidates.length) return;
+  let best=null, bestScore=-1;
+  candidates.forEach(c=>{
+    const shared = (c.interests||[]).filter(i=>(user.interests||[]).includes(i)).length;
+    const score = shared*20 + (c.domaine===user.domaine?15:0) + (c.dispo===user.dispo?10:0);
+    if(score>bestScore){ bestScore=score; best=c; }
+  });
+  if(!best) return;
+  const compat = Math.min(98, 40+bestScore);
+  const binome = {
+    id:uid(),
+    parrainEmail: user.role==='parrain'? user.email : best.email,
+    filleulEmail: user.role==='filleul'? user.email : best.email,
+    status:'proposé', compat, createdAt:Date.now()
+  };
+  DB.binomes.push(binome);
+  await saveKey('binomes');
+  await notify(binome.parrainEmail, "Un binôme vous a été proposé automatiquement, en attente de validation.");
+  await notify(binome.filleulEmail, "Un binôme vous a été proposé automatiquement, en attente de validation.");
+  await notify(ADMIN_EMAIL, "Nouvelle proposition de binôme en attente de validation.");
+}
+
+/* ============================================================
+   ENTER APP / ROUTER
+   ============================================================ */
+function enterApp(){
+  document.getElementById('view-site').classList.remove('active');
+  document.getElementById('view-app').classList.add('active');
+  const u = me();
+  renderSidebar(u.role==='admin'?'admin':'user');
+  goto(u.role==='admin'?'admin-overview':'dashboard');
+}
+async function logout(){
+  SESSION=null; await saveSession();
+  document.getElementById('view-app').classList.remove('active');
+  document.getElementById('view-site').classList.add('active');
+  window.scrollTo(0,0);
+}
+function renderSidebar(mode){
+  const u=me();
+  const userLinks = [
+    ['dashboard','🏠','Vue d\'ensemble'],
+    ['profile','👤','Mon profil'],
+    ['binome','🤝','Mon binôme'],
+    ['resources','📚','Ressources'],
+    ['saved','⭐','Enregistrés'],
+    ['messages','💬','Messagerie'],
+    ['notifications','🔔','Notifications'],
+  ];
+  const adminLinks = [
+    ['admin-overview','📊','Statistiques'],
+    ['admin-users','👥','Utilisateurs'],
+    ['admin-binomes','🤝','Binômes'],
+    ['admin-resources','📚','Ressources'],
+  ];
+  const links = mode==='admin'? adminLinks : userLinks;
+  document.getElementById('sidebar').innerHTML = `
+    <div class="logo">🌱 AgroMentor</div>
+    ${links.map(l=>`<a class="side-link" id="side-${l[0]}" onclick="goto('${l[0]}')">${l[1]} ${l[2]}</a>`).join('')}
+    <div class="side-bottom">
+      <div class="side-link" style="opacity:.8;cursor:default;">👤 ${u.prenom} ${u.nom}</div>
+    </div>`;
+}
+const TITLES = {
+  dashboard:"Vue d'ensemble", profile:"Mon profil", binome:"Mon binôme", resources:"Ressources partagées",
+  saved:"Mes éléments enregistrés", messages:"Messagerie", notifications:"Notifications",
+  'admin-overview':"Statistiques de la plateforme", 'admin-users':"Gestion des utilisateurs",
+  'admin-binomes':"Gestion des binômes", 'admin-resources':"Gestion des ressources"
+};
+function goto(view){
+  document.getElementById('topbarTitle').textContent = TITLES[view]||'';
+  document.querySelectorAll('.side-link').forEach(s=>s.classList.remove('active'));
+  const sl=document.getElementById('side-'+view); if(sl) sl.classList.add('active');
+  const renderers = {
+    dashboard:renderDashboard, profile:renderProfile, binome:renderBinomeUser, resources:renderResources,
+    saved:renderSaved, messages:renderMessages, notifications:renderNotifications,
+    'admin-overview':renderAdminOverview, 'admin-users':renderAdminUsers,
+    'admin-binomes':renderAdminBinomes, 'admin-resources':renderAdminResources
+  };
+  (renderers[view]||renderDashboard)();
+}
+
+/* ---------- USER: dashboard overview ---------- */
+function myBinome(){
+  const u=me();
+  return DB.binomes.find(b=> (b.parrainEmail===u.email||b.filleulEmail===u.email) && b.status==='validé');
+}
+function renderDashboard(){
+  const u=me();
+  const b = myBinome();
+  const myRes = DB.resources.filter(r=>r.author===u.email);
+  const unread = DB.notifications.filter(n=>n.forEmail===u.email && !n.read).length;
+  document.getElementById('appContent').innerHTML = `
+    <div class="panel profile-card">
+      <div class="avatar">${initials(u.prenom+' '+u.nom)}</div>
+      <div>
+        <h3 style="margin:0;">${u.prenom} ${u.nom}</h3>
+        <p style="margin:4px 0 0;color:var(--ink-soft);">${u.role==='parrain'?'Parrain':'Filleul'} · ${u.niveau||''} · ${u.domaine||''}</p>
+      </div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><b>${b? '1':'0'}</b><span>Binôme actif</span></div>
+      <div class="stat-box"><b>${myRes.length}</b><span>Ressources partagées</span></div>
+      <div class="stat-box"><b>${unread}</b><span>Notifications non lues</span></div>
+      <div class="stat-box"><b>${(u.saved||[]).length}</b><span>Éléments enregistrés</span></div>
+    </div>
+    <div class="panel">
+      <h3>Mon binôme</h3>
+      ${binomeSummaryHTML(u)}
+    </div>`;
+}
+function binomeSummaryHTML(u){
+  const pending = DB.binomes.find(b=>(b.parrainEmail===u.email||b.filleulEmail===u.email) && b.status==='proposé');
+  const valid = myBinome();
+  if(valid){
+    const otherEmail = valid.parrainEmail===u.email? valid.filleulEmail: valid.parrainEmail;
+    const other = findUser(otherEmail);
+    return `<div style="display:flex;align-items:center;gap:14px;"><div class="avatar" style="width:52px;height:52px;font-size:16px;">${initials(other?.prenom+' '+other?.nom)}</div>
+      <div><b>${other?.prenom} ${other?.nom}</b><br><span class="badge ok">Binôme validé · ${valid.compat}% compatibilité</span></div></div>`;
+  }
+  if(pending) return `<span class="badge wait">En attente de validation par l'administrateur (compatibilité estimée ${pending.compat}%)</span>`;
+  return `<p style="color:var(--ink-soft);font-size:14px;">Aucune proposition pour le moment. Complétez votre profil pour améliorer votre compatibilité.</p>`;
+}
+
+function renderBinomeUser(){
+  const u=me();
+  document.getElementById('appContent').innerHTML = `<div class="panel"><h3>Mon binôme</h3>${binomeSummaryHTML(u)}</div>`;
+}
+
+/* ---------- USER: profile ---------- */
+function renderProfile(){
+  const u=me();
+  document.getElementById('appContent').innerHTML = `
+    <div class="panel">
+      <h3>Informations personnelles</h3>
+      <div class="form-grid">
+        <div class="field"><label>Nom</label><input id="pNom" value="${u.nom||''}"></div>
+        <div class="field"><label>Prénom</label><input id="pPrenom" value="${u.prenom||''}"></div>
+        <div class="field"><label>Ville d'origine</label><input id="pVille" value="${u.ville||''}"></div>
+        <div class="field"><label>Téléphone</label><input id="pTel" value="${u.tel||''}"></div>
+        <div class="field"><label>Domaine préféré</label><input id="pDomaine" value="${u.domaine||''}"></div>
+        <div class="field"><label>Niveau d'étude</label><input id="pNiveau" value="${u.niveau||''}"></div>
+      </div>
+      <button class="btn btn-primary" onclick="saveProfile()">Enregistrer les modifications</button>
+    </div>
+    <div class="panel">
+      <h3>Sécurité</h3>
+      <div class="form-grid">
+        <div class="field"><label>Nouveau mot de passe</label><input type="password" id="pPass1"></div>
+        <div class="field"><label>Confirmation</label><input type="password" id="pPass2"></div>
+      </div>
+      <button class="btn btn-outline" onclick="changePassword()">Changer le mot de passe</button>
+    </div>
+    <div class="panel">
+      <h3>Zone sensible</h3>
+      <p style="color:var(--ink-soft);font-size:13.5px;">La suppression de votre compte annulera automatiquement votre binôme.</p>
+      <button class="btn btn-danger" onclick="deleteMyAccount()">Supprimer mon compte</button>
+    </div>`;
+}
+async function saveProfile(){
+  const u=me();
+  u.nom=document.getElementById('pNom').value.trim();
+  u.prenom=document.getElementById('pPrenom').value.trim();
+  u.ville=document.getElementById('pVille').value.trim();
+  u.tel=document.getElementById('pTel').value.trim();
+  u.domaine=document.getElementById('pDomaine').value.trim();
+  u.niveau=document.getElementById('pNiveau').value.trim();
+  await saveKey('users');
+  toast("Profil mis à jour et sauvegardé.");
+  renderSidebar('user');
+}
+async function changePassword(){
+  const p1=document.getElementById('pPass1').value, p2=document.getElementById('pPass2').value;
+  if(!p1||p1!==p2){ toast("Les mots de passe ne correspondent pas."); return; }
+  me().password=p1; await saveKey('users');
+  toast("Mot de passe changé avec succès.");
+}
+async function deleteMyAccount(){
+  if(!confirm("Confirmer la suppression définitive de votre compte ?")) return;
+  await removeUserCascade(SESSION);
+  toast("Compte supprimé.");
+  logout();
+}
+async function removeUserCascade(email){
+  DB.users = DB.users.filter(u=>u.email!==email);
+  DB.binomes = DB.binomes.filter(b=>{
+    const involved = b.parrainEmail===email||b.filleulEmail===email;
+    return !involved;
+  });
+  DB.resources.forEach(r=>{ r.likes=(r.likes||[]).filter(l=>l!==email); (r.comments||[]).forEach(c=>{}); });
+  await saveKey('users'); await saveKey('binomes'); await saveKey('resources');
+}
+
+/* ---------- USER: resources (share / like / comment / download / save / share-link) ---------- */
+function renderResources(){
+  const u=me();
+  document.getElementById('appContent').innerHTML = `
+    <div class="panel">
+      <h3>Partager une ressource</h3>
+      <div class="form-grid">
+        <div class="field"><label>Titre</label><input id="resTitle" placeholder="Ex: TP analyse sensorielle"></div>
+        <div class="field"><label>Type</label><select id="resType">
+          <option>PDF</option><option>Cours</option><option>Word</option><option>PowerPoint</option><option>Lien</option><option>Image</option><option>Vidéo</option>
+        </select></div>
+      </div>
+      <div class="field"><label>Lien ou description</label><input id="resLink" placeholder="URL du fichier ou du lien utile"></div>
+      <button class="btn btn-primary" onclick="addResource()">Publier</button>
+    </div>
+    <div id="resList"></div>`;
+  renderResourceList('resList', DB.resources.slice().reverse());
+}
+function renderResourceList(targetId, list){
+  const u=me();
+  document.getElementById(targetId).innerHTML = list.map(r=>{
+    const author = findUser(r.author);
+    const liked = (r.likes||[]).includes(u.email);
+    const saved = (u.saved||[]).includes(r.id);
+    return `<div class="res-card" id="rc-${r.id}">
+      <div class="res-top">
+        <div><span class="res-type">${r.type}</span><h4 style="margin:4px 0;color:var(--forest);">${r.title}</h4>
+        <span style="font-size:12px;color:var(--ink-soft);">par ${author? author.prenom+' '+author.nom : 'Utilisateur'}</span></div>
+      </div>
+      <p style="font-size:13.5px;color:var(--ink-soft);word-break:break-all;">${r.link||''}</p>
+      <div class="res-actions">
+        <button class="${liked?'liked':''}" onclick="toggleLike('${r.id}')">👍 ${(r.likes||[]).length}</button>
+        <button onclick="downloadResource('${r.id}')">⬇️ Télécharger (${r.downloads||0})</button>
+        <button class="${saved?'saved':''}" onclick="toggleSave('${r.id}')">${saved?'★ Enregistré':'☆ Enregistrer'}</button>
+        <button onclick="shareResource('${r.id}')">↗️ Repartager (${r.shares||0})</button>
+      </div>
+      <div class="comment-box">
+        ${(r.comments||[]).map(c=>`<div class="comment-line"><b>${c.author}:</b> ${c.text}</div>`).join('')}
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <input placeholder="Ajouter un commentaire..." id="cin-${r.id}" style="flex:1;">
+          <button class="btn btn-sm btn-outline" onclick="addComment('${r.id}')">Envoyer</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') || '<p style="color:var(--ink-soft);">Aucune ressource pour le moment.</p>';
+}
+async function addResource(){
+  const title=document.getElementById('resTitle').value.trim();
+  const type=document.getElementById('resType').value;
+  const link=document.getElementById('resLink').value.trim();
+  if(!title){ toast("Merci d'indiquer un titre."); return; }
+  const r={id:uid(), author:SESSION, title, type, link, likes:[], comments:[], downloads:0, shares:0, createdAt:Date.now()};
+  DB.resources.push(r);
+  await saveKey('resources');
+  toast("Ressource partagée et sauvegardée.");
+  renderResources();
+}
+async function toggleLike(id){
+  const u=me(); const r=DB.resources.find(x=>x.id===id);
+  r.likes = r.likes||[];
+  const i=r.likes.indexOf(u.email);
+  if(i>-1) r.likes.splice(i,1); else r.likes.push(u.email);
+  await saveKey('resources'); renderResources();
+}
+async function downloadResource(id){
+  const r=DB.resources.find(x=>x.id===id);
+  r.downloads=(r.downloads||0)+1;
+  await saveKey('resources');
+  toast(r.link? "Téléchargement simulé — "+r.link : "Téléchargement simulé.");
+  renderResources();
+}
+async function toggleSave(id){
+  const u=me(); u.saved=u.saved||[];
+  const i=u.saved.indexOf(id);
+  if(i>-1) u.saved.splice(i,1); else u.saved.push(id);
+  await saveKey('users'); renderResources();
+}
+async function addComment(id){
+  const input=document.getElementById('cin-'+id); const text=input.value.trim();
+  if(!text) return;
+  const r=DB.resources.find(x=>x.id===id); const u=me();
+  r.comments=r.comments||[]; r.comments.push({author:u.prenom+' '+u.nom,text});
+  await saveKey('resources'); renderResources();
+}
+function renderSaved(){
+  const u=me();
+  renderResourceList('appContent', DB.resources.filter(r=>(u.saved||[]).includes(r.id)));
+  document.getElementById('appContent').insertAdjacentHTML('afterbegin','<div class="panel"><h3>Mes éléments enregistrés</h3><p style="color:var(--ink-soft);font-size:13.5px;">Retrouvez ici vos ressources, discussions et annonces sauvegardées.</p></div>');
+}
+
+/* ---------- USER: messages ---------- */
+function conversationsFor(email){
+  const partners = new Set();
+  DB.messages.forEach(m=>{ if(m.from===email) partners.add(m.to); if(m.to===email) partners.add(m.from); });
+  const b = myBinome();
+  if(b){ partners.add(b.parrainEmail===email? b.filleulEmail : b.parrainEmail); }
+  return [...partners];
+}
+function renderMessages(){
+  const u=me();
+  const convs = conversationsFor(u.email);
+  if(!currentChatWith && convs.length) currentChatWith = convs[0];
+  document.getElementById('appContent').innerHTML = `
+    <div class="chat-wrap">
+      <div class="conv-list">${convs.length? convs.map(c=>{
+        const cu=findUser(c);
+        return `<div class="conv-item ${c===currentChatWith?'active':''}" onclick="openChat('${c}')">${cu? cu.prenom+' '+cu.nom : c}</div>`;
+      }).join('') : '<div style="padding:16px;color:var(--ink-soft);font-size:13px;">Aucune conversation. Un binôme validé apparaîtra ici automatiquement.</div>'}</div>
+      <div class="chat-panel">
+        <div class="chat-msgs" id="chatMsgs"></div>
+        <div class="chat-input">
+          <input id="chatInput" placeholder="Écrire un message..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="btn btn-primary btn-sm" onclick="sendMsg()">Envoyer</button>
+        </div>
+      </div>
+    </div>`;
+  renderChatMsgs();
+}
+function openChat(email){ currentChatWith=email; renderMessages(); }
+function renderChatMsgs(){
+  const u=me(); const box=document.getElementById('chatMsgs'); if(!box) return;
+  if(!currentChatWith){ box.innerHTML='<p style="color:var(--ink-soft);">Sélectionnez une conversation.</p>'; return; }
+  const list = DB.messages.filter(m=> (m.from===u.email&&m.to===currentChatWith)||(m.from===currentChatWith&&m.to===u.email));
+  list.forEach(m=>{ if(m.to===u.email) m.read=true; });
+  box.innerHTML = list.map(m=>`<div class="msg ${m.from===u.email?'me':'them'}">${m.text}<span class="msg-time">${new Date(m.ts).toLocaleString('fr-FR')}</span></div>`).join('') || '<p style="color:var(--ink-soft);">Aucun message. Dites bonjour !</p>';
+  box.scrollTop = box.scrollHeight;
+}
+async function sendMsg(){
+  const u=me(); const input=document.getElementById('chatInput'); const text=input.value.trim();
+  if(!text||!currentChatWith) return;
+  DB.messages.push({id:uid(), from:u.email, to:currentChatWith, text, ts:Date.now(), read:false});
+  await saveKey('messages');
+  await notify(currentChatWith, `Nouveau message de ${u.prenom} ${u.nom}.`);
+  input.value=''; renderChatMsgs(); await saveKey('messages');
+}
+
+/* ---------- USER: notifications ---------- */
+function renderNotifications(){
+  const u=me();
+  const list = DB.notifications.filter(n=>n.forEmail===u.email).sort((a,b)=>b.ts-a.ts);
+  document.getElementById('appContent').innerHTML = `<div class="panel"><h3>Notifications</h3>
+    ${list.map(n=>`<div class="notif-item ${n.read?'read':''}"><div class="notif-dot"></div><div>${n.text}<br><span style="font-size:11px;color:var(--ink-soft);">${new Date(n.ts).toLocaleString('fr-FR')}</span></div></div>`).join('') || '<p style="color:var(--ink-soft);">Aucune notification.</p>'}
+    </div>`;
+  list.forEach(n=>n.read=true);
+  saveKey('notifications');
+}
+
+/* ============================================================
+   ADMIN VIEWS
+   ============================================================ */
+function renderAdminOverview(){
+  const nbParrains = DB.users.filter(u=>u.role==='parrain').length;
+  const nbFilleuls = DB.users.filter(u=>u.role==='filleul').length;
+  const actifs = DB.binomes.filter(b=>b.status==='validé').length;
+  const avgCompat = DB.binomes.length? Math.round(DB.binomes.reduce((s,b)=>s+(b.compat||0),0)/DB.binomes.length) : 0;
+  const nbRes = DB.resources.length;
+  const nbDl = DB.resources.reduce((s,r)=>s+(r.downloads||0),0);
+  const activeUsers = DB.users.filter(u=>u.status==='actif').length;
+  const newSignups = DB.users.filter(u=>u.createdAt && (Date.now()-u.createdAt)<7*86400000).length;
+  document.getElementById('statBinomes').textContent = actifs;
+  document.getElementById('appContent').innerHTML = `
+    <div class="panel"><h3>Statistiques générales</h3>
+      <div class="stat-grid">
+        <div class="stat-box"><b>${nbParrains}</b><span>Parrains</span></div>
+        <div class="stat-box"><b>${nbFilleuls}</b><span>Filleuls</span></div>
+        <div class="stat-box"><b>${actifs}</b><span>Binômes actifs</span></div>
+        <div class="stat-box"><b>${avgCompat}%</b><span>Compatibilité moyenne</span></div>
+        <div class="stat-box"><b>${nbRes}</b><span>Ressources partagées</span></div>
+        <div class="stat-box"><b>${nbDl}</b><span>Téléchargements</span></div>
+        <div class="stat-box"><b>${activeUsers}</b><span>Utilisateurs actifs</span></div>
+        <div class="stat-box"><b>${newSignups}</b><span>Nouvelles inscriptions (7j)</span></div>
+      </div>
+    </div>`;
+}
+function renderAdminUsers(){
+  document.getElementById('appContent').innerHTML = `
+    <div class="panel">
+      <h3>Utilisateurs</h3>
+      <input placeholder="Rechercher un utilisateur..." id="userSearch" style="margin-bottom:14px;" oninput="filterUsers()">
+      <div style="overflow:auto;"><table id="userTable"></table></div>
+    </div>`;
+  filterUsers();
+}
+function filterUsers(){
+  const q=(document.getElementById('userSearch')?.value||'').toLowerCase();
+  const list = DB.users.filter(u=>u.role!=='admin' && (u.nom+u.prenom+u.email).toLowerCase().includes(q));
+  document.getElementById('userTable').innerHTML = `
+    <tr><th>Nom</th><th>Rôle</th><th>Statut</th><th>Actions</th></tr>
+    ${list.map(u=>`<tr>
+      <td>${u.prenom} ${u.nom}<br><span style="color:var(--ink-soft);font-size:11.5px;">${u.email}</span></td>
+      <td>${u.role==='parrain'?'Parrain':'Filleul'}</td>
+      <td><span class="badge ${u.status==='actif'?'ok':'off'}">${u.status}</span></td>
+      <td class="row-actions">
+        <button class="icon-btn" onclick="editUserPrompt('${u.email}')">Modifier</button>
+        ${u.status==='actif'
+          ? `<button class="icon-btn" onclick="toggleUserStatus('${u.email}','désactivé')">Désactiver</button>`
+          : `<button class="icon-btn" onclick="toggleUserStatus('${u.email}','actif')">Réactiver</button>`}
+        <button class="icon-btn" onclick="adminDeleteUser('${u.email}')">Supprimer</button>
+      </td>
+    </tr>`).join('')}`;
+}
+async function toggleUserStatus(email,status){
+  findUser(email).status=status; await saveKey('users');
+  await notify(email, status==='actif'? "Votre compte a été réactivé par l'administrateur." : "Votre compte a été désactivé par l'administrateur.");
+  filterUsers();
+}
+function editUserPrompt(email){
+  const u=findUser(email);
+  const nom=prompt("Nom :", u.nom); if(nom===null) return;
+  const prenom=prompt("Prénom :", u.prenom); if(prenom===null) return;
+  u.nom=nom; u.prenom=prenom;
+  saveKey('users').then(()=>{ toast("Utilisateur modifié."); filterUsers(); });
+}
+async function adminDeleteUser(email){
+  if(!confirm("Supprimer définitivement cet utilisateur ? Ses binômes seront annulés.")) return;
+  await removeUserCascade(email);
+  toast("Utilisateur supprimé, associations annulées.");
+  filterUsers();
+}
+function renderAdminBinomes(){
+  document.getElementById('appContent').innerHTML = `
+    <div class="panel">
+      <h3>Créer un binôme manuellement</h3>
+      <div class="form-grid">
+        <div class="field"><label>Parrain</label><select id="manParrain">${DB.users.filter(u=>u.role==='parrain').map(u=>`<option value="${u.email}">${u.prenom} ${u.nom}</option>`).join('')}</select></div>
+        <div class="field"><label>Filleul</label><select id="manFilleul">${DB.users.filter(u=>u.role==='filleul').map(u=>`<option value="${u.email}">${u.prenom} ${u.nom}</option>`).join('')}</select></div>
+      </div>
+      <button class="btn btn-primary" onclick="createBinomeManual()">Créer le binôme</button>
+    </div>
+    <div class="panel">
+      <h3>Propositions et binômes</h3>
+      <div style="overflow:auto;"><table id="binomeTable"></table></div>
+    </div>`;
+  renderBinomeTable();
+}
+function renderBinomeTable(){
+  document.getElementById('binomeTable').innerHTML = `
+    <tr><th>Parrain</th><th>Filleul</th><th>Compat.</th><th>Statut</th><th>Actions</th></tr>
+    ${DB.binomes.map(b=>{
+      const p=findUser(b.parrainEmail), f=findUser(b.filleulEmail);
+      const badgeClass = b.status==='validé'?'ok':b.status==='refusé'?'no':'wait';
+      return `<tr>
+        <td>${p? p.prenom+' '+p.nom : '—'}</td>
+        <td>${f? f.prenom+' '+f.nom : '—'}</td>
+        <td>${b.compat||'—'}%</td>
+        <td><span class="badge ${badgeClass}">${b.status}</span></td>
+        <td class="row-actions">
+          ${b.status!=='validé'? `<button class="icon-btn" onclick="setBinomeStatus('${b.id}','validé')">Accepter</button>`:''}
+          ${b.status!=='refusé'? `<button class="icon-btn" onclick="setBinomeStatus('${b.id}','refusé')">Refuser</button>`:''}
+          <button class="icon-btn" onclick="modifyBinome('${b.id}')">Modifier</button>
+          <button class="icon-btn" onclick="deleteBinome('${b.id}')">Supprimer</button>
+        </td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="5" style="color:var(--ink-soft);">Aucun binôme.</td></tr>'}`;
+}
+async function createBinomeManual(){
+  const parrainEmail=document.getElementById('manParrain').value;
+  const filleulEmail=document.getElementById('manFilleul').value;
+  if(!parrainEmail||!filleulEmail){ toast("Sélectionnez un parrain et un filleul."); return; }
+  DB.binomes.push({id:uid(), parrainEmail, filleulEmail, status:'validé', compat:100, createdAt:Date.now(), manual:true});
+  await saveKey('binomes');
+  await notify(parrainEmail,"Un binôme a été créé manuellement par l'administrateur."); 
+  await notify(filleulEmail,"Un binôme a été créé manuellement par l'administrateur.");
+  toast("Binôme créé et validé."); renderBinomeTable();
+}
+async function setBinomeStatus(id,status){
+  const b=DB.binomes.find(x=>x.id===id); b.status=status;
+  await saveKey('binomes');
+  await notify(b.parrainEmail, status==='validé'? "Votre binôme a été validé par l'administrateur !" : "Votre proposition de binôme a été refusée.");
+  await notify(b.filleulEmail, status==='validé'? "Votre binôme a été validé par l'administrateur !" : "Votre proposition de binôme a été refusée.");
+  renderBinomeTable();
+  document.getElementById('statBinomes') && (document.getElementById('statBinomes').textContent = DB.binomes.filter(x=>x.status==='validé').length);
+}
+async function modifyBinome(id){
+  const b=DB.binomes.find(x=>x.id===id);
+  const candidates = DB.users.filter(u=>u.role==='filleul').map(u=>u.email+' — '+u.prenom+' '+u.nom).join('\n');
+  const newFilleul = prompt("Nouvel e-mail du filleul :\n"+candidates, b.filleulEmail);
+  if(!newFilleul) return;
+  if(!findUser(newFilleul)){ toast("Utilisateur introuvable."); return; }
+  b.filleulEmail=newFilleul; b.status='proposé';
+  await saveKey('binomes'); toast("Binôme modifié, en attente de re-validation.");
+  renderBinomeTable();
+}
+async function deleteBinome(id){
+  DB.binomes = DB.binomes.filter(b=>b.id!==id);
+  await saveKey('binomes'); toast("Binôme supprimé.");
+  renderBinomeTable();
+}
+function renderAdminResources(){
+  document.getElementById('appContent').innerHTML = `<div class="panel"><h3>Modération des ressources</h3><div id="modList"></div></div>`;
+  document.getElementById('modList').innerHTML = DB.resources.slice().reverse().map(r=>{
+    const author=findUser(r.author);
+    return `<div class="res-card">
+      <div class="res-top"><div><span class="res-type">${r.type}</span><h4 style="margin:4px 0;">${r.title}</h4>
+      <span style="font-size:12px;color:var(--ink-soft);">par ${author?author.prenom+' '+author.nom:'—'} · ${r.hidden?'masquée':'visible'}</span></div></div>
+      <div class="res-actions">
+        <button onclick="toggleHideResource('${r.id}')">${r.hidden?'Ré-approuver':'Masquer'}</button>
+        <button onclick="deleteResource('${r.id}')">Supprimer</button>
+      </div>
+      <div class="comment-box">${(r.comments||[]).map((c,i)=>`<div class="comment-line"><b>${c.author}:</b> ${c.text} <button class="icon-btn" style="margin-left:8px;" onclick="deleteComment('${r.id}',${i})">Suppr.</button></div>`).join('')}</div>
+    </div>`;
+  }).join('') || '<p style="color:var(--ink-soft);">Aucune ressource.</p>';
+}
+async function toggleHideResource(id){
+  const r=DB.resources.find(x=>x.id===id); r.hidden=!r.hidden;
+  await saveKey('resources'); renderAdminResources();
+}
+async function deleteResource(id){
+  DB.resources = DB.resources.filter(r=>r.id!==id);
+  await saveKey('resources'); toast("Ressource supprimée."); renderAdminResources();
+}
+async function deleteComment(id,idx){
+  const r=DB.resources.find(x=>x.id===id); r.comments.splice(idx,1);
+  await saveKey('resources'); renderAdminResources();
+}
+
+/* ============================================================
+   DEEP LINK — ouvrir directement une ressource partagée
+   ============================================================ */
+function handleDeepLink(){
+  if(location.hash.startsWith('#ressource-') && SESSION){
+    const id = location.hash.replace('#ressource-','');
+    setTimeout(()=>{ goto('resources'); const el=document.getElementById('rc-'+id); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },300);
+  }
+}
+
+/* ============================================================
+   SHOWCASE (public sponsors/sponsees preview)
+   ============================================================ */
+function renderShowcase(){
+  const sponsors = DB.users.filter(u=>u.role==='parrain').slice(0,3);
+  const sponsees = DB.users.filter(u=>u.role==='filleul').slice(0,3);
+  const demo = (list, roleLabel, domains) => (list.length? list : domains.map((d,i)=>({prenom:'Étudiant',nom:(i+1)+'',domaine:d,niveau:['Licence 3','Master 1','Master 2'][i]})))
+    .map(u=>`<div class="people-card"><div class="avatar">${initials((u.prenom||'')+' '+(u.nom||''))}</div><h4>${u.prenom} ${u.nom}</h4><span>${u.niveau||''}</span><br><span class="tag">${u.domaine||roleLabel}</span></div>`).join('');
+  document.getElementById('sponsorShowcase').innerHTML = demo(sponsors,'Parrain',['Agronomie','Nutrition','Agroalimentaire']);
+  document.getElementById('sponseeShowcase').innerHTML = demo(sponsees,'Filleul',['Productions végétales','Recherche scientifique','Développement durable']);
+}
+
+/* ============================================================
+   DÉSACTIVATION DU CLIC DROIT
+   ============================================================ */
+document.addEventListener('contextmenu', function(e){
+  e.preventDefault();
+  toast("Le clic droit est désactivé sur ce site.");
+  return false;
+});
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init(){
+  await loadDB();
+  document.getElementById('statBinomes').textContent = DB.binomes.filter(b=>b.status==='validé').length;
+  renderShowcase();
+  if(SESSION && findUser(SESSION)){
+    enterApp();
+    handleDeepLink();
+  }
+})();
+</script>
+</body>
+</html>
